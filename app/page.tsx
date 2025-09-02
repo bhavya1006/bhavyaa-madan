@@ -17,38 +17,48 @@ type Comment = {
   createdAt: number
 }
 
-function useLocalFeedback() {
-  const [comments, setComments] = useState<Comment[]>([])
+function useFeedback() {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchComments = async () => {
     try {
-      const raw = localStorage.getItem("bhavyaa-portfolio-feedback")
-      if (raw) setComments(JSON.parse(raw))
-    } catch { }
-  }, [])
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("bhavyaa-portfolio-feedback", JSON.stringify(comments))
-    } catch { }
-  }, [comments])
-
-  const add = (c: Omit<Comment, "id" | "createdAt">) => {
-    const newItem: Comment = {
-      ...c,
-      id: crypto.randomUUID(),
-      createdAt: Date.now(),
+      const res = await fetch('/api/comments');
+      const data = await res.json();
+      setComments(data);
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+    } finally {
+      setLoading(false);
     }
-    setComments((prev) => [newItem, ...prev])
-  }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  const add = async (c: Omit<Comment, 'id' | 'createdAt'>) => {
+    try {
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(c),
+      });
+      if (res.ok) {
+        fetchComments(); // Refresh comments
+      }
+    } catch (error) {
+      console.error('Failed to add comment:', error);
+    }
+  };
 
   const avgRating = useMemo(() => {
-    if (comments.length === 0) return 0
-    const sum = comments.reduce((acc, c) => acc + (c.rating || 0), 0)
-    return sum / comments.length
-  }, [comments])
+    if (comments.length === 0) return 0;
+    const sum = comments.reduce((acc, c) => acc + (c.rating || 0), 0);
+    return sum / comments.length;
+  }, [comments]);
 
-  return { comments, add, avgRating }
+  return { comments, add, avgRating, loading };
 }
 
 function SplashHero({ name, onDone }: { name: string; onDone: () => void }) {
@@ -188,7 +198,7 @@ function SocialPanel({ rating, ready }: { rating: number; ready: boolean }) {
         >
           <header className="mb-3">
             <h3 className="text-lg font-semibold text-foreground">Connect</h3>
-            <p className="text-xs text-muted-foreground">Small icons, top-right area grid</p>
+            <p className="text-xs text-muted-foreground">Reach out for collaborations, design work, or just to chat.</p>
           </header>
           <div className="grid grid-cols-6 gap-3">
             <Link
@@ -215,8 +225,8 @@ function SocialPanel({ rating, ready }: { rating: number; ready: boolean }) {
             >
               <Twitter className="h-4 w-4 text-foreground" />
             </Link>
-	    
-	    <Link
+
+            <Link
               href="https://drive.google.com/file/d/1O52iuX0URwHBhCLcUgrRv___JxOstGsz/view?usp=sharing"
               target="_blank"
               aria-label="Resume"
@@ -224,7 +234,7 @@ function SocialPanel({ rating, ready }: { rating: number; ready: boolean }) {
             >
               <FileUser className="h-4 w-4 text-foreground" />
             </Link>
-	    
+
             {/* {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="h-10 rounded-lg border border-white/5 bg-black/20" aria-hidden />
             ))} */}
@@ -401,7 +411,7 @@ function CommentsList({ items }: { items: Comment[] }) {
     return <p className="text-xs text-muted-foreground">No comments yet. Be the first!</p>
   }
   return (
-    <ul className="mt-3 max-h-40 overflow-auto space-y-3 pr-1">
+    <ul className="mt-3 max-h-48 overflow-auto space-y-3 pr-1">
       {items.map((c) => (
         <li key={c.id} className="rounded-md border border-white/10 bg-black/20 p-2">
           <div className="flex items-center justify-between">
@@ -422,7 +432,7 @@ function CommentsList({ items }: { items: Comment[] }) {
 export default function HomePage() {
   const isMobile = useIsMobile()
   const [showSplash, setShowSplash] = useState(true)
-  const { comments, add, avgRating } = useLocalFeedback()
+  const { comments, add, avgRating } = useFeedback()
   const panelsReady = !showSplash
 
   return (
@@ -438,7 +448,7 @@ export default function HomePage() {
           <FeedbackPanel
             ready={panelsReady}
             onSubmit={(d) => {
-              add({ name: d.name, message: d.message, rating: d.rating })
+              add({ name: d.name, message: d.message, rating: d.rating });
             }}
           />
           <Panel ariaLabel="Recent comments">
@@ -499,8 +509,4 @@ export default function HomePage() {
     </main>
   )
 }
-//        <div className="row-start-2 col-start-1">
-//          <ImagePanel ready={panelsReady} />
-//        </div>
-
 
