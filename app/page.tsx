@@ -227,17 +227,12 @@ function SocialPanel({ rating, ready }: { rating: number; ready: boolean }) {
 
 function ProjectsPanel({ ready }: { ready: boolean }) {
   const projects = [
-    { id: "p1", name: "Neon Forms", tag: "UI Kit", preview: "", source: "/" },
-    { id: "p2", name: "Traveless", tag: "Microinteractions", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
-    { id: "p3", name: "Legal Connect", tag: "Figma, Open Source, Hackbyte 2.0", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
+    { id: "p1", name: "FlowSync", tag: "Next.js, Node.js, WebSockets", preview: "", source: "https://github.com/Ankur2606/FlowSync" },
+    { id: "p2", name: "Traveless", tag: "Figma, Python, Prototype Designing", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
+    { id: "p3", name: "Legal Connect", tag: "Figma, Open Source, Prototype designing", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
     { id: "p4", name: "Insta-VitaminC-Advertisement", tag: "Figma, Product Designing", source: "https://www.figma.com/community/file/1542189929422183011/insta-vitaminc-advertisement" },
-    { id: "p5", name: "Neon Forms", tag: "UI Kit", preview: "", source: "/" },
-    { id: "p6", name: "Traveless", tag: "Microinteractions", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
-    { id: "p7", name: "Legal Connect", tag: "Figma, Open Source, Hackbyte 2.0", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
-    { id: "p8", name: "Insta-VitaminC-Advertisement", tag: "Figma, Product Designing", source: "https://www.figma.com/community/file/1542189929422183011/insta-vitaminc-advertisement" },
-    { id: "p9", name: "Traveless", tag: "Microinteractions", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
-    { id: "p10", name: "Legal Connect", tag: "Figma, Open Source, Hackbyte 2.0", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
-    { id: "p11", name: "Insta-VitaminC-Advertisement", tag: "Figma, Product Designing", source: "https://www.figma.com/community/file/1542189929422183011/insta-vitaminc-advertisement" },
+    { id: "p5", name: "Pre DAP", tag: "Figma, Next.js, Prototype Designing", preview: "https://predap-ai-guide.vercel.app", source: "https://github.com/bhavya1006/Hackbyte-3.0" },
+    { id: "p6", name: "Water Supply Management | Hack'ndore", tag: "Hardware, React, Frontend", preview: "", source: "https://github.com/ayushmanlakshkar/Hack-Ndore" },
   ]
   return (
     <Panel ariaLabel="Projects list">
