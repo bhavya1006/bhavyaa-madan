@@ -2,6 +2,8 @@
 
 import * as React from "react"
 
+import { useIsMobile } from "../hooks/useIsMobile"
+
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Github, Linkedin, Twitter, Star } from "lucide-react"
@@ -80,24 +82,13 @@ function SplashHero({ name, onDone }: { name: string; onDone: () => void }) {
   )
 }
 
-function ImagePanel({ ready }: { ready: boolean }) {
-  return (
-    <Panel ariaLabel="Profile image" className={cn("flex items-center justify-center", "h-full")}>
-      <div className={cn(
-        "opacity-0",
-        ready && "animate-[soft-slide-in-right_1450ms_cubic-bezier(0.22,1,0.36,1)_200ms_forwards]",
-      )}>
+// function ImagePanel({ ready }: { ready: boolean }) {
+// return (
+// <Panel ariaLabel="Profile image" className={cn("flex items-center justify-center", "h-full")}>
 
-        <img
-          src="/hero.png"
-          alt="Hero"
-          className="w-full max-h-48 object-cover rounded-xl shadow-lg border-4 border-white/10 transition-all"
-          style={{ filter: ready ? "none" : "blur(2px)" }}
-        />
-      </div>
-    </Panel>
-  )
-}
+// </Panel>
+//)
+//}
 function GlowHover({
   className,
   children,
@@ -159,6 +150,18 @@ function NamePanel({ name, ready }: { name: string; ready: boolean }) {
           ready && "animate-[soft-slide-in-left_1400ms_cubic-bezier(0.22,1,0.36,1)_120ms_forwards]",
         )}
       >
+        <div className={cn(
+          "opacity-0",
+          ready && "animate-[soft-slide-in-right_1450ms_cubic-bezier(0.22,1,0.36,1)_200ms_forwards]",
+        )}>
+
+          <img
+            src="/hero.png"
+            alt="Hero"
+            className="w-full max-h-36 object-cover rounded-xl shadow-lg border-4 border-white/10 transition-all"
+            style={{ filter: ready ? "none" : "blur(2px)" }}
+          />
+        </div>
         <h2 className="text-4xl md:text-xl font-bold text-foreground text-pretty">{name}</h2>
         <p className="text-sm text-muted-foreground mt-2">Designer • UI/UX • Developer</p>
       </div>
@@ -232,6 +235,9 @@ function ProjectsPanel({ ready }: { ready: boolean }) {
     { id: "p6", name: "Traveless", tag: "Microinteractions", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
     { id: "p7", name: "Legal Connect", tag: "Figma, Open Source, Hackbyte 2.0", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
     { id: "p8", name: "Insta-VitaminC-Advertisement", tag: "Figma, Product Designing", source: "https://www.figma.com/community/file/1542189929422183011/insta-vitaminc-advertisement" },
+    { id: "p9", name: "Traveless", tag: "Microinteractions", preview: "https://bhavya1006.github.io/traveless/", source: "https://github.com/bhavya1006/traveless" },
+    { id: "p10", name: "Legal Connect", tag: "Figma, Open Source, Hackbyte 2.0", source: "https://www.figma.com/community/file/1505244706824730737/legal-connect" },
+    { id: "p11", name: "Insta-VitaminC-Advertisement", tag: "Figma, Product Designing", source: "https://www.figma.com/community/file/1542189929422183011/insta-vitaminc-advertisement" },
   ]
   return (
     <Panel ariaLabel="Projects list">
@@ -244,7 +250,7 @@ function ProjectsPanel({ ready }: { ready: boolean }) {
             Personal projects, open source, and more
           </p>
         </header>
-        <ul className="space-y-2 max-h-[420px] overflow-auto pr-1 scrollbar-thin scrollbar-thumb-black/30 scrollbar-track-black/10">
+        <ul className="space-y-2 max-h-[350px] overflow-auto pr-1 scrollbar-thin scrollbar-thumb-black/30 scrollbar-track-black/10">
           <style>{`
           ul::-webkit-scrollbar {
             width: 6px;
@@ -390,7 +396,7 @@ function CommentsList({ items }: { items: Comment[] }) {
     return <p className="text-xs text-muted-foreground">No comments yet. Be the first!</p>
   }
   return (
-    <ul className="mt-3 max-h-40 overflow-auto space-y-2 pr-1">
+    <ul className="mt-3 max-h-40 overflow-auto space-y-3 pr-1">
       {items.map((c) => (
         <li key={c.id} className="rounded-md border border-white/10 bg-black/20 p-2">
           <div className="flex items-center justify-between">
@@ -409,6 +415,7 @@ function CommentsList({ items }: { items: Comment[] }) {
 
 
 export default function HomePage() {
+  const isMobile = useIsMobile()
   const [showSplash, setShowSplash] = useState(true)
   const { comments, add, avgRating } = useLocalFeedback()
   const panelsReady = !showSplash
@@ -417,30 +424,18 @@ export default function HomePage() {
     <main className="relative min-h-screen bg-[radial-gradient(1200px_800px_at_80%_-10%,rgba(59,130,246,0.15),transparent),radial-gradient(900px_700px_at_-10%_90%,rgba(250,204,21,0.10),transparent)]">
       {showSplash && <SplashHero name="Bhavyaa Madan" onDone={() => setShowSplash(false)} />}
 
-      <div
-        className="grid grid-cols-2 grid-rows-4 gap-2 p-4 h-screen
-        md:grid-cols-4 md:grid-rows-3
-        sm:grid-cols-1 sm:grid-rows-none sm:gap-4"
-      >
-        {/* Top row: NamePanel and SocialPanel */}
-        <div className="col-span-1 row-span-1 row-start-1">
-          <NamePanel name="Bhavyaa Madan" ready={panelsReady} />
-        </div>
-        <div className="col-span-1 row-span-1 col-start-1 row-start-2">
+      {isMobile ? (
+        // Mobile: stacked, ProjectsPanel above FeedbackPanel
+        <div className="flex flex-col gap-4 p-3">
           <SocialPanel rating={avgRating} ready={panelsReady} />
-        </div>
-
-        {/* Middle row: ProjectsPanel and ImagePanel */}
-        <div className="col-span-2 row-span-3">
+          <NamePanel name="Bhavyaa Madan" ready={panelsReady} />
           <ProjectsPanel ready={panelsReady} />
-        </div>
-        <div className="col-span-1 col-start-2">
-          <ImagePanel ready={panelsReady} />
-        </div>
-
-        {/* Bottom row: ProjectsPanel Continued and FeedbackPanel */}
-        <div className="col-span-1 row-span-1 col-start-2 row-start-4 ">
-          {/* Optionally, show more projects or summary */}
+          <FeedbackPanel
+            ready={panelsReady}
+            onSubmit={(d) => {
+              add({ name: d.name, message: d.message, rating: d.rating })
+            }}
+          />
           <Panel ariaLabel="Recent comments">
             <div
               className={cn(
@@ -453,32 +448,54 @@ export default function HomePage() {
             </div>
           </Panel>
         </div>
-        <div className="col-span-1 row-span-1 col-start-2 row-start-3">
-          <FeedbackPanel
-            ready={panelsReady}
-            onSubmit={(d) => {
-              add({ name: d.name, message: d.message, rating: d.rating })
-            }}
-          />
+      ) : (
+        // Desktop: original grid layout
+        <div
+          className="grid grid-cols-2 grid-rows-none grid-flow-row-dense gap-4 p-3 h-screen
+          md:grid-cols-3 md:grid-rows-none
+          sm:grid-cols-1 sm:grid-rows-none sm:gap-4"
+        >
+          <div className="col-span-2 grid gap-6">
+            <div className="col-span-2 col-start-1 row-start-1">
+              <SocialPanel rating={avgRating} ready={panelsReady} />
+            </div>
+            <div className="row-start-2 col-start-2">
+              <NamePanel name="Bhavyaa Madan" ready={panelsReady} />
+            </div>
+            <div className="col-span-2">
+              <FeedbackPanel
+                ready={panelsReady}
+                onSubmit={(d) => {
+                  add({ name: d.name, message: d.message, rating: d.rating })
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-6">
+            <div className="col-start-3 col-span-2 ">
+              <ProjectsPanel ready={panelsReady} />
+            </div>
+            <div className="col-span-1 col-start-3">
+              <Panel ariaLabel="Recent comments">
+                <div
+                  className={cn(
+                    "opacity-0",
+                    panelsReady && "animate-[soft-rise-in_1650ms_cubic-bezier(0.22,1,0.36,1)_380ms_forwards]",
+                  )}
+                >
+                  <h3 className="text-lg font-semibold text-foreground">Recent</h3>
+                  <CommentsList items={comments} />
+                </div>
+              </Panel>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Mobile layout: stacked panels */}
-      <style>{`
-        @media (max-width: 760px) {
-          .grid {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 1rem !important;
-            height: auto !important;
-          }
-          .col-span-2, .col-span-4, .col-span-3, .col-span-1 {
-            width: 100% !important;
-            grid-column: auto !important;
-            grid-row: auto !important;
-          }
-        }
-      `}</style>
+      )}
     </main>
   )
 }
+//        <div className="row-start-2 col-start-1">
+//          <ImagePanel ready={panelsReady} />
+//        </div>
+
+
