@@ -6,7 +6,7 @@ import { useIsMobile } from "../hooks/useIsMobile"
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Github, Linkedin, Twitter, Star } from "lucide-react"
+import { Github, Linkedin, Twitter, Star, FileUser } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type Comment = {
@@ -215,6 +215,16 @@ function SocialPanel({ rating, ready }: { rating: number; ready: boolean }) {
             >
               <Twitter className="h-4 w-4 text-foreground" />
             </Link>
+	    
+	    <Link
+              href="https://drive.google.com/file/d/1O52iuX0URwHBhCLcUgrRv___JxOstGsz/view?usp=sharing"
+              target="_blank"
+              aria-label="Resume"
+              className="flex h-10 items-center justify-center rounded-lg border border-white/10 bg-black/30 hover:bg-black/40"
+            >
+              <FileUser className="h-4 w-4 text-foreground" />
+            </Link>
+	    
             {/* {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="h-10 rounded-lg border border-white/5 bg-black/20" aria-hidden />
             ))} */}
