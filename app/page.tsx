@@ -24,10 +24,13 @@ function useFeedback() {
   const fetchComments = async () => {
     try {
       const res = await fetch('/api/comments');
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
       const data = await res.json();
-      setComments(data);
+
+      setComments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch comments:', error);
+      setComments([]);
     } finally {
       setLoading(false);
     }
@@ -53,7 +56,7 @@ function useFeedback() {
   };
 
   const avgRating = useMemo(() => {
-    if (comments.length === 0) return 0;
+    if (!Array.isArray(comments) || comments.length === 0) return 0;
     const sum = comments.reduce((acc, c) => acc + (c.rating || 0), 0);
     return sum / comments.length;
   }, [comments]);
