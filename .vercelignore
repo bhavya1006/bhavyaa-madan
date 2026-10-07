@@ -1,0 +1,7 @@
+# Repository documentation stays in Git, outside the deployment upload.
+docs/
+AGENTS.md
+CLAUDE.md
+README.md
+debug.log
+*.tsbuildinfo
